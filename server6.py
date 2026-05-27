@@ -13,12 +13,10 @@ app = Flask(__name__)
 # 🔴 MongoDB Connection
 # ==============================
 
-client = MongoClient(
-    "mongodb+srv://ganeshchettipally:Ganesh0505@cluster0.zpjpsun.mongodb.net/?retryWrites=true&w=majority"
-)
+client = MongoClient("YOUR_MONGODB_CONNECTION_STRING")
 
-db = client["iot_database"]
-collection = db["intruder_logs"]
+db = client["YOUR_DATABASE_NAME"]
+collection = db["intruder_logs"] // YOU CAN KEEP THE NAME BY UR CHOICE 
 
 # ==============================
 # 📁 Folder Setup
@@ -127,8 +125,8 @@ def recognize_face(image_path):
 # 📲 Telegram
 # ==============================
 
-BOT_TOKEN = "8572205880:AAG4i9GgIcnODPoO2ml1K3pvHHYD_BFuNI0"
-CHAT_ID = "6365701002"
+BOT_TOKEN = "YOUR_TOKEN_ID"
+CHAT_ID = "CHAT_ID"
 
 def send_telegram_message(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"

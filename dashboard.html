@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Smart Security System</title>
+    <meta http-equiv="refresh" content="10">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            padding: 30px 0;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            transition: 0.3s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat-number {
+            font-size: 40px;
+            font-weight: 700;
+        }
+
+        .safe-count {
+            color: #00ff9d;
+        }
+
+        .intruder-count {
+            color: #ff3b3b;
+        }
+
+        .online-dot {
+            height: 12px;
+            width: 12px;
+            background: #00ff9d;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px #00ff9d; }
+            50% { box-shadow: 0 0 20px #00ff9d; }
+            100% { box-shadow: 0 0 5px #00ff9d; }
+        }
+
+        .table-section {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .badge-safe {
+            background: #00ff9d;
+            color: black;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .badge-intruder {
+            background: #ff3b3b;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        img {
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        🤖 AI Smart Intrusion Monitoring System
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 text-center">
+
+        <div class="col-md-3">
+            <div class="glass-card">
+                <div>Total Alerts</div>
+                <div class="stat-number text-warning">{{ total }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="glass-card">
+                <div>Authorized Entries</div>
+                <div class="stat-number safe-count">
+                    {{ alerts | selectattr("event", "equalto", "SAFE") | list | length }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="glass-card">
+                <div>Intruder Alerts</div>
+                <div class="stat-number intruder-count">
+                    {{ alerts | selectattr("event", "equalto", "INTRUDER") | list | length }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="glass-card">
+                <div>System Status</div>
+                <div>
+                    <span class="online-dot"></span> ONLINE
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Alert Table -->
+    <div class="table-section">
+        <h5 class="mb-4">📋 Alert History</h5>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Zone</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alert in alerts %}
+                    <tr>
+                        <td>
+                            {% if alert.event == "SAFE" %}
+                                <span class="badge-safe">SAFE</span>
+                            {% elif alert.event == "INTRUDER" %}
+                                <span class="badge-intruder">INTRUDER</span>
+                            {% else %}
+                                {{ alert.event }}
+                            {% endif %}
+                        </td>
+                        <td>{{ alert.zone }}</td>
+                        <td>{{ alert.date }}</td>
+                        <td>{{ alert.time }}</td>
+                        <td>
+                            {% if alert.image %}
+                                <img src="{{ url_for('static', filename='images/' + alert.image) }}" width="90" data-bs-toggle="modal" data-bs-target="#imgModal{{ loop.index }}">
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="imgModal{{ loop.index }}" tabindex="-1">
+                                  <div class="modal-dialog modal-lg">
+                                    <div class="modal-content bg-dark">
+                                      <div class="modal-body text-center">
+                                        <img src="{{ url_for('static', filename='images/' + alert.image) }}" class="img-fluid">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

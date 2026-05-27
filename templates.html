@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart IoT Security System</title>
+    <meta http-equiv="refresh" content="10">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0e1117;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        .main-title {
+            text-align: center;
+            padding: 25px 0;
+            font-weight: 700;
+            font-size: 30px;
+        }
+
+        .card-custom {
+            background: #161b22;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            transition: 0.3s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .online-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .table-container {
+            background: #161b22;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        .table thead {
+            background-color: #21262d;
+        }
+
+        .badge-zone {
+            background: #0d6efd;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        img {
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="main-title">
+        🚨 Smart IoT Intrusion Monitoring Dashboard
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 text-center">
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <div>Total Alerts</div>
+                <div class="stat-number text-danger">{{ total }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <div>System Status</div>
+                <div>
+                    <span class="online-dot"></span> ONLINE
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-custom">
+                <div>Last Alert</div>
+                <div>
+                    {{ alerts[0].date if alerts else "N/A" }}<br>
+                    {{ alerts[0].time if alerts else "" }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Alert History Table -->
+    <div class="table-container">
+        <h5 class="mb-3">📋 Alert History</h5>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Zone</th>
+                        <th>Day</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alert in alerts %}
+                    <tr>
+                        <td><span class="badge-zone">{{ alert.zone }}</span></td>
+                        <td>{{ alert.day }}</td>
+                        <td>{{ alert.date }}</td>
+                        <td>{{ alert.time }}</td>
+                        <td>
+                            {% if alert.image %}
+                                <img src="{{ url_for('static', filename='images/' + alert.image) }}" width="100">
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
